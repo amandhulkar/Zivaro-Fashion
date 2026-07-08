@@ -4,12 +4,18 @@ let unauthorizedHandler = null
 let isRefreshing = false
 let refreshQueue = []
 
+const isBrowser = typeof window !== 'undefined'
+const isLocalHost = isBrowser && ['localhost', '127.0.0.1'].includes(window.location.hostname)
+const envBaseUrl = import.meta.env.VITE_API_BASE_URL
+const fallbackBaseUrl = isLocalHost ? 'http://localhost:5000/api/v1' : `${window.location.origin}/api/v1`
+const baseURL = envBaseUrl && !(envBaseUrl.includes('localhost') && !isLocalHost) ? envBaseUrl : fallbackBaseUrl
+
 export const setUnauthorizedHandler = (handler) => {
   unauthorizedHandler = handler
 }
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1',
+  baseURL,
   withCredentials: true,
 })
 
