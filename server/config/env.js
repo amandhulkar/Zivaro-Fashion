@@ -28,6 +28,7 @@ export const env = {
     windowMs: toNumber(process.env.RATE_LIMIT_WINDOW_MS, 15 * 60 * 1000),
     max: toNumber(process.env.RATE_LIMIT_MAX, 100),
   },
+  seedProducts: process.env.SEED_PRODUCTS === 'true',
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
     apiKey: process.env.CLOUDINARY_API_KEY || '',
