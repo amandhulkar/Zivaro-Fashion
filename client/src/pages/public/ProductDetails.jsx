@@ -28,7 +28,17 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState('')
   const [qty, setQty] = useState(1)
 
-  useEffect(() => { if (product) { setSelectedColor(product.availableColors?.[0]?.name || product.color); setSelectedSize(product.availableSizes?.[0] || 'Free Size'); addRecentlyViewed(product.id) } }, [product, addRecentlyViewed])
+  useEffect(() => {
+    if (product) {
+      setImageIndex(0)
+      setZoomOpen(false)
+      setQty(1)
+      setSelectedColor(product.availableColors?.[0]?.name || product.color)
+      setSelectedSize(product.availableSizes?.[0] || 'Free Size')
+      addRecentlyViewed(product.id)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [id, product, addRecentlyViewed])
   const related = useMemo(() => product ? getRelatedProducts(product, 4) : [], [product, getRelatedProducts])
   const recent = recentlyViewed.filter((item) => item.id !== product?.id).slice(0, 4)
   if (!product) return <section className="section-y"><Container><EmptyState title="Product not found" message="This style is not available in the current Zivaro collection." /></Container></section>

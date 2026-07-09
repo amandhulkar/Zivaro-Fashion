@@ -25,7 +25,7 @@ export const useProducts = ({ query = '', category = 'All', sort = 'featured', f
     return [...result].sort((a, b) => sort === 'price-asc' ? a.price - b.price : sort === 'price-desc' ? b.price - a.price : sort === 'rating' ? b.rating - a.rating : sort === 'discount' ? b.discount - a.discount : sort === 'newest' ? Number(b.isNewArrival) - Number(a.isNewArrival) : sort === 'best-sellers' ? Number(b.isBestSeller) - Number(a.isBestSeller) : weight(b) - weight(a))
   }, [query, category, sort, filters])
   const getRelatedProducts = useCallback((product, limit = 4) => allProducts.filter((p) => p.id !== product.id && (p.category === product.category || p.occasion === product.occasion)).slice(0, limit), [])
-  const addRecentlyViewed = useCallback((id) => { const next = [id, ...recentIds.filter((item) => item !== id)].slice(0, 8); setRecentIds(next); writeRecent(next) }, [recentIds])
+  const addRecentlyViewed = useCallback((id) => { setRecentIds((current) => { const next = [id, ...current.filter((item) => item !== id)].slice(0, 8); writeRecent(next); return next }) }, [])
   const recentlyViewed = useMemo(() => recentIds.map((id) => allProducts.find((p) => p.id === id)).filter(Boolean), [recentIds])
   return { products: allProducts, filteredProducts, suggestions, categories, priceRanges, availableColors, availableSizes, availableOccasions, formatPrice, getProductBySlug, getRelatedProducts, addRecentlyViewed, recentlyViewed }
 }

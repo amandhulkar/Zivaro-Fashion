@@ -13,6 +13,7 @@ const sortOptions = [
 ]
 const ratingOptions = [4, 4.5]
 const discountOptions = [20, 25, 30]
+const initialFilters = { price: '', rating: '', discount: '', size: '', color: '', availability: false }
 
 const FilterButton = ({ active, children, onClick }) => <button onClick={onClick} className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[.14em] ${active ? 'border-accent bg-accent text-secondary' : 'border-line bg-secondary text-muted hover:text-accent'}`}>{children}</button>
 
@@ -22,14 +23,21 @@ const Shop = () => {
   const [category, setCategory] = useState(params.get('category') || 'All')
   const [sort, setSort] = useState(params.get('sort') || 'featured')
   const [view, setView] = useState('grid')
-  const [filters, setFilters] = useState({ price: '', rating: '', discount: '', size: '', color: '', availability: false })
+  const [filters, setFilters] = useState(initialFilters)
   const { filteredProducts, suggestions, categories, priceRanges, availableColors, availableSizes } = useProducts({ query, category, sort, filters })
+  const resetShop = () => { setQuery(''); setCategory('All'); setSort('featured'); setFilters(initialFilters); setParams({}); window.scrollTo({ top: 0, behavior: 'smooth' }) }
 
   useEffect(() => {
     setQuery(params.get('q') || '')
     setCategory(params.get('category') || 'All')
     setSort(params.get('sort') || 'featured')
+    if (!params.toString()) setFilters(initialFilters)
   }, [params])
+
+  useEffect(() => {
+    window.addEventListener('reset-shop', resetShop)
+    return () => window.removeEventListener('reset-shop', resetShop)
+  })
 
   const updateFilter = (key, value) => setFilters((current) => ({ ...current, [key]: current[key] === value ? '' : value }))
   const clearFilters = () => { setQuery(''); setCategory('All'); setSort('featured'); setFilters({ price: '', rating: '', discount: '', size: '', color: '', availability: false }); setParams({}) }
